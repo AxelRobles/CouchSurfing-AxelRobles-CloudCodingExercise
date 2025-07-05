@@ -18,8 +18,8 @@ resource "google_compute_route" "default_internet_route" {
   priority         = 1000
 }
 
-resource "google_compute_firewall" "allow_http" {
-  name    = "allow-http"
+resource "google_compute_firewall" "allow_couchsurfing_http" {
+  name    = "allow-couchsurfing-http"
   network = google_compute_network.couchsurfing_vpc.id
 
   allow {
@@ -40,4 +40,18 @@ resource "google_compute_firewall" "allow_https" {
   }
   source_ranges = ["0.0.0.0/0"]
   target_tags = ["web-app"]
+}
+
+resource "google_compute_firewall" "allow_iap_ssh" {
+  name    = "allow-iap-ssh"
+  network = google_compute_network.couchsurfing_vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  # This is the specific IP range for Google's IAP service.
+  source_ranges = ["35.235.240.0/20"]
+  target_tags   = ["ssh-tag"]
 }

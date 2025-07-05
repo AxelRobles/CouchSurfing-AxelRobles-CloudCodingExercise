@@ -1,5 +1,5 @@
 resource "google_compute_instance" "web" {
-  name         = "web-app-instance"
+  name         = "web-app-instance-v2"
   machine_type = "e2-micro"
   zone         = var.zone
 
@@ -31,14 +31,8 @@ resource "google_compute_instance" "web" {
     docker build -t fastapi-app /opt/app/app
 
     # Run the Docker container
-    docker run -d -p 80:5000 
-      -e DB_HOST='${google_sql_database_instance.app_db.private_ip_address}' 
-      -e DB_USER='${google_sql_user.app_user.name}' 
-      -e DB_PASSWORD='${var.db_password}' 
-      -e DB_NAME='${google_sql_database.app_database.name}' 
-      --name fastapi-container 
-      fastapi-app
+    docker run -d -p 80:5000 -e DB_HOST='${google_sql_database_instance.app_db.private_ip_address}' -e DB_USER='${google_sql_user.app_user.name}' -e DB_PASSWORD='${var.db_password}' -e DB_NAME='${google_sql_database.app_database.name}' --name fastapi-container fastapi-app
   EOT
 
-  tags = ["web-tag", "ssh-tag"]
+  tags = ["web-app", "ssh-tag"]
 }
